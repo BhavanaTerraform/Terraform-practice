@@ -11,28 +11,27 @@ terraform {
 
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-  skip_provider_registration = true # This is only required when the User, Service Principal, or Identity running Terraform lacks the permissions to register Azure Resource Providers.
   features {}
 }
 
 # Create a resource group
-resource azurerm_resourcegroup "RG"{
-  Name = "Resourcegroup01"
-  Location = "WestUS"
+resource azurerm_resource_group "RG"{
+  name = "Resourcegroup01"
+  location = "WestUS"
 }
 
 # Create a virtual network within the resource group
-resource azurerm_virtualnetwork "VNET"{
-  Name = "VirtualNetwork01"
-  Vnetresourcegroup = azurerm_resourcegroup.Name
-  Location = azurerm_resourcegroup.Location
+resource azurerm_virtual_network "VNET"{
+  name = "VirtualNetwork01"
+  resource_group_name = azurerm_resource_group.RG.name
+  location = azurerm_resource_group.RG.location
   address_space = ["10.0.0.0/22"]
 
 }
 
-resource azurerm_Subnet "Subnet"{
-  Name = "Subnet01"
-  VirtualNetworkName = azurerm_virtualnetwork.Name
-  Subnetresourcegroup = azurerm_resourcegroup.Name
-  address_space = ["10.1.0.0/24"]
+resource azurerm_subnet "Subnet"{
+  name = "Subnet01"
+  virtual_network_name = azurerm_virtual_network.VNET.name
+  resource_group_name = azurerm_resource_group.RG.name
+  address_prefixes = ["10.0.2.0/24"]
 }
